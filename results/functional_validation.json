@@ -1,0 +1,8 @@
+{
+ "empirical_detection": 0.472,
+ "analytic_detection": 0.47737004645676684,
+ "trials": 2000,
+ "d": 41,
+ "n": 4096,
+ "c": 64
+}
