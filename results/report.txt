@@ -1,0 +1,289 @@
+== bench
+{'machine': 'x86_64', 'python': '3.13.18', 'n_blocks': 16384, 'block_bytes': 4096, 's_mac': 274, 't_prf': 1.7009179689719822e-07, 't_sha_4k': 3.778778499963664e-06, 't_mac_check': 8.07600200005254e-06, 't_group': 1.3695350003217754e-06, 't_taggen_file': 0.06058558599988828, 't_pairing': 0.001556769149988213, 't_scal_conv': 4.2402441380318123e-07, 't_g1_add': 9.102125000026718e-07, 't_edic_hash_block': 0.06845336780566402, 'edic_proof_bytes': 256, 'edic_m': 133, 't_edic1024_hash_block': 0.02178541470507822, 'edic1024_proof_bytes': 128, 'edic1024_m': 216, 'runs': 5, 'max_relative_spread': 1.1231294890711638}
+expand {'32': 0.014, '64': 0.025, '128': 0.028, '256': 0.046, '512': 0.085, '1024': 0.162}
+mac_prove {'32': 0.093, '64': 0.195, '128': 0.441, '256': 0.842, '512': 1.686, '1024': 3.366}
+mac_tau {'32': 0.011, '64': 0.017, '128': 0.028, '256': 0.05, '512': 0.094, '1024': 0.187}
+mac_tau_cached {'32': 0.006, '64': 0.006, '128': 0.007, '256': 0.008, '512': 0.01, '1024': 0.015}
+mac_tau_prefix {}
+bls_prove {'32': 1.413, '64': 2.412, '128': 3.873, '256': 7.104, '512': 16.478, '1024': 24.859}
+bls_verify {'32': 11.076, '64': 9.695, '128': 11.452, '256': 13.068, '512': 17.999, '1024': 25.977}
+mht_prove {'32': 0.053, '64': 0.107, '128': 0.227, '256': 0.524, '512': 1.446, '1024': 2.322}
+mht_verify {'32': 0.33, '64': 0.688, '128': 1.336, '256': 2.723, '512': 5.566, '1024': 11.489}
+edic_prove {'32': 7.332, '64': 19.473, '128': 28.164, '256': 58.629, '512': 162.882, '1024': 252.383}
+edic_verify {'32': 58.599, '64': 70.976, '128': 61.584, '256': 61.029, '512': 65.289, '1024': 74.601}
+edic1024_prove {'32': 3.478, '64': 7.21, '128': 8.639, '256': 17.261, '512': 35.526, '1024': 79.562}
+edic1024_verify {'32': 19.856, '64': 29.17, '128': 19.338, '256': 20.733, '512': 23.421, '1024': 41.554}
+multiexp {'1024': 1.3097891601976386e-05, '4096': 1.2371751464845815e-05, '16384': 1.0541406188974145e-05, '65536': 9.033293685907495e-06}
+functional {'empirical_detection': 0.4749, 'analytic_detection': 0.47737004645676684, 'trials': 20000, 'binomial_se': 0.0035319108511019295, 'd': 41, 'n': 4096, 'c': 64}
+== E1
+32 Uniform exp 6.949 ± 0.716 unw 6.524 ± 0.513 mttd 3.964 ± 0.145 p95 15.760 ± 0.643 det 0.988 ± 0.002 samp 3200 cR None
+32 Rep-Gated (tuned) exp 6.980 ± 0.565 unw 6.891 ± 0.517 mttd 3.126 ± 0.167 p95 15.187 ± 1.083 det 0.990 ± 0.001 samp 3200 cR 128
+32 RACE-Audit exp 6.949 ± 0.716 unw 6.524 ± 0.513 mttd 3.964 ± 0.145 p95 15.760 ± 0.643 det 0.988 ± 0.002 samp 3200 cR None
+64 Uniform exp 4.235 ± 0.461 unw 3.930 ± 0.336 mttd 1.929 ± 0.073 p95 7.832 ± 0.318 det 0.993 ± 0.001 samp 6400 cR None
+64 Rep-Gated (tuned) exp 2.758 ± 0.254 unw 2.635 ± 0.204 mttd 1.120 ± 0.034 p95 5.010 ± 0.197 det 0.997 ± 0.001 samp 6400 cR 128
+64 RACE-Audit exp 1.697 ± 0.196 unw 2.905 ± 0.324 mttd 1.241 ± 0.096 p95 6.040 ± 0.501 det 0.997 ± 0.001 samp 6198 cR None
+64 RACE w/o UCB (kappa=0) exp 1.686 ± 0.198 unw 2.813 ± 0.316 mttd 1.190 ± 0.090 p95 5.723 ± 0.475 det 0.997 ± 0.001 samp 6199 cR None
+64 RACE w/o forgetting (lambda=1) exp 1.692 ± 0.196 unw 2.890 ± 0.321 mttd 1.235 ± 0.096 p95 5.993 ± 0.494 det 0.997 ± 0.001 samp 6184 cR None
+64 RACE w/o floor (c_min=0) exp 7.410 ± 0.700 unw 16.449 ± 1.198 mttd 9.382 ± 0.627 p95 38.083 ± 7.620 det 0.961 ± 0.003 samp 5863 cR None
+64 RACE w/o value weights exp 1.823 ± 0.191 unw 1.746 ± 0.164 mttd 0.687 ± 0.028 p95 3.200 ± 0.181 det 0.998 ± 0.001 samp 6085 cR None
+64 RACE continuous (no tiers) exp 1.589 ± 0.179 unw 2.803 ± 0.311 mttd 1.189 ± 0.093 p95 5.725 ± 0.480 det 0.997 ± 0.001 samp 6391 cR None
+128 Uniform exp 2.083 ± 0.239 unw 1.959 ± 0.189 mttd 0.819 ± 0.039 p95 3.835 ± 0.142 det 0.997 ± 0.001 samp 12800 cR None
+128 Rep-Gated (tuned) exp 1.414 ± 0.118 unw 1.367 ± 0.098 mttd 0.536 ± 0.026 p95 2.875 ± 0.207 det 0.999 ± 0.001 samp 12800 cR 256
+128 RACE-Audit exp 0.596 ± 0.060 unw 1.059 ± 0.113 mttd 0.407 ± 0.035 p95 2.093 ± 0.181 det 0.999 ± 0.000 samp 12199 cR None
+256 Uniform exp 0.822 ± 0.102 unw 0.758 ± 0.075 mttd 0.290 ± 0.014 p95 1.868 ± 0.119 det 0.999 ± 0.000 samp 25600 cR None
+256 Rep-Gated (tuned) exp 0.694 ± 0.060 unw 0.678 ± 0.055 mttd 0.257 ± 0.019 p95 1.365 ± 0.178 det 0.999 ± 0.000 samp 25300 cR 460
+256 RACE-Audit exp 0.196 ± 0.023 unw 0.355 ± 0.036 mttd 0.131 ± 0.010 p95 0.967 ± 0.068 det 1.000 ± 0.000 samp 24600 cR None
+256 RACE w/o UCB (kappa=0) exp 0.180 ± 0.021 unw 0.334 ± 0.036 mttd 0.124 ± 0.011 p95 0.960 ± 0.069 det 1.000 ± 0.000 samp 24841 cR None
+256 RACE w/o forgetting (lambda=1) exp 0.190 ± 0.021 unw 0.335 ± 0.034 mttd 0.124 ± 0.010 p95 0.967 ± 0.068 det 1.000 ± 0.000 samp 24801 cR None
+256 RACE w/o floor (c_min=0) exp 0.235 ± 0.027 unw 0.542 ± 0.063 mttd 0.203 ± 0.022 p95 0.967 ± 0.068 det 1.000 ± 0.000 samp 24614 cR None
+256 RACE w/o value weights exp 0.281 ± 0.038 unw 0.273 ± 0.030 mttd 0.100 ± 0.006 p95 0.967 ± 0.068 det 1.000 ± 0.000 samp 23399 cR None
+256 RACE continuous (no tiers) exp 0.159 ± 0.020 unw 0.301 ± 0.031 mttd 0.111 ± 0.009 p95 0.967 ± 0.068 det 1.000 ± 0.000 samp 25561 cR None
+512 Uniform exp 0.212 ± 0.032 unw 0.200 ± 0.023 mttd 0.073 ± 0.005 p95 0.800 ± 0.152 det 1.000 ± 0.000 samp 51200 cR None
+512 Rep-Gated (tuned) exp 0.212 ± 0.032 unw 0.200 ± 0.023 mttd 0.073 ± 0.005 p95 0.800 ± 0.152 det 1.000 ± 0.000 samp 51200 cR 128
+512 RACE-Audit exp 0.045 ± 0.007 unw 0.069 ± 0.009 mttd 0.025 ± 0.003 p95 0.000 ± 0.000 det 1.000 ± 0.000 samp 49910 cR None
+{
+"32|Uniform": {
+"p": NaN,
+"mean_reduction": 0.0,
+"p_unw": NaN,
+"mean_reduction_unw": 0.0
+},
+"32|Rep-Gated (tuned)": {
+"p": 0.45161323621869087,
+"mean_reduction": 0.00449094475974865,
+"p_unw": 0.07642491898287412,
+"mean_reduction_unw": 0.053259590112388566
+},
+"64|Uniform": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.5992823412465622,
+"p_unw": 9.313225746154785e-10,
+"mean_reduction_unw": 0.26076507676213634
+},
+"64|Rep-Gated (tuned)": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.38484010406817426,
+"p_unw": 0.9981277836486697,
+"mean_reduction_unw": -0.10269495171017673
+},
+"128|Uniform": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.7139034144036556,
+"p_unw": 8.666533220995528e-07,
+"mean_reduction_unw": 0.4594180704441041
+},
+"128|Rep-Gated (tuned)": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.5786026424402353,
+"p_unw": 2.2471889269905073e-06,
+"mean_reduction_unw": 0.22505894788194203
+},
+"256|Uniform": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.7619923801355517,
+"p_unw": 9.313225746154785e-10,
+"mean_reduction_unw": 0.5322486074464964
+},
+"256|Rep-Gated (tuned)": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.7181235305858982,
+"p_unw": 9.313225746154785e-10,
+"mean_reduction_unw": 0.47705670272041933
+},
+"512|Uniform": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.7851646432251268,
+"p_unw": 8.655631974598644e-07,
+"mean_reduction_unw": 0.6555740432612314
+},
+"512|Rep-Gated (tuned)": {
+"p": 9.313225746154785e-10,
+"mean_reduction": 0.7851646432251268,
+"p_unw": 8.655631974598644e-07,
+"mean_reduction_unw": 0.6555740432612314
+}
+}
+eq {'exposure': {'Uniform': nan, 'Rep-Gated (tuned)': nan, 'RACE-Audit': 255.99999999999994}, 'exposure_unw': {'Uniform': 380.29921300777806, 'Rep-Gated (tuned)': 370.0927283288538, 'RACE-Audit': 255.99999999999994}}
+supp {'uniform': {'768': {'exposure': [0.0764284854368679, 0.012738680684897332], 'exposure_unw': [0.07133333333333333, 0.009694352464061863]}, '1024': {'exposure': [0.03126894188784726, 0.006225509418680816], 'exposure_unw': [0.03022222222222222, 0.0042484828651594255]}, '1536': {'exposure': [0.0067646397375894845, 0.0023507667910997697], 'exposure_unw': [0.0064444444444444445, 0.0015308354639574928]}}, 'rg': {'768': {'exposure': [0.0764284854368679, 0.012738680684897332], 'exposure_unw': [0.07133333333333333, 0.009694352464061863], 'cR': 460}, '1024': {'exposure': [0.03126894188784726, 0.006225509418680816], 'exposure_unw': [0.03022222222222222, 0.0042484828651594255], 'cR': 460}, '1536': {'exposure': [0.0067646397375894845, 0.0023507667910997697], 'exposure_unw': [0.0064444444444444445, 0.0015308354639574928], 'cR': 460}}, 'corollary1': {'ratio_numeric': 0.3630333356885384, 'ratio_gm_am': 0.36303025986245124, 'dB_per_node': 205.63284074700977}}
+== E2_onoff
+64 Uniform total 5.324 ± 0.404 attack 4.893 ± 0.397 mttd 3.955 ± 0.086 p95 17.300 ± 0.530 cR None
+64 Rep-Gated (tuned) total 4.658 ± 0.317 attack 4.026 ± 0.320 mttd 2.652 ± 0.062 p95 10.210 ± 0.238 cR 128
+64 RACE-Audit total 3.251 ± 0.208 attack 2.820 ± 0.199 mttd 2.289 ± 0.120 p95 10.328 ± 0.940 cR None
+64 RACE w/o UCB (kappa=0) total 3.231 ± 0.214 attack 2.777 ± 0.204 mttd 2.231 ± 0.121 p95 10.065 ± 0.974 cR None
+64 RACE w/o forgetting (lambda=1) total 3.556 ± 0.229 attack 3.172 ± 0.223 mttd 2.753 ± 0.164 p95 13.538 ± 1.300 cR None
+64 RACE w/o floor (c_min=0) total 7.000 ± 0.489 attack 3.078 ± 0.222 mttd 8.682 ± 0.447 p95 29.318 ± 5.040 cR None
+128 Uniform total 4.039 ± 0.321 attack 3.903 ± 0.318 mttd 2.202 ± 0.045 p95 9.275 ± 0.240 cR None
+128 Rep-Gated (tuned) total 3.214 ± 0.226 attack 2.739 ± 0.227 mttd 1.341 ± 0.033 p95 5.263 ± 0.166 cR 256
+128 RACE-Audit total 1.747 ± 0.103 attack 1.580 ± 0.098 mttd 0.870 ± 0.052 p95 3.485 ± 0.236 cR None
+128 RACE w/o UCB (kappa=0) total 1.668 ± 0.101 attack 1.483 ± 0.097 mttd 0.800 ± 0.040 p95 3.175 ± 0.193 cR None
+128 RACE w/o forgetting (lambda=1) total 1.913 ± 0.103 attack 1.749 ± 0.101 mttd 1.022 ± 0.066 p95 4.083 ± 0.317 cR None
+128 RACE w/o floor (c_min=0) total 2.782 ± 0.182 attack 1.915 ± 0.105 mttd 2.367 ± 0.163 p95 3.388 ± 0.189 cR None
+256 Uniform total 2.646 ± 0.217 attack 2.618 ± 0.215 mttd 1.068 ± 0.022 p95 4.578 ± 0.185 cR None
+256 Rep-Gated (tuned) total 1.966 ± 0.114 attack 1.584 ± 0.125 mttd 0.655 ± 0.014 p95 3.000 ± 0.000 cR 460
+256 RACE-Audit total 0.856 ± 0.037 attack 0.818 ± 0.036 mttd 0.388 ± 0.027 p95 1.933 ± 0.095 cR None
+256 RACE w/o UCB (kappa=0) total 0.757 ± 0.029 attack 0.709 ± 0.029 mttd 0.339 ± 0.025 p95 1.767 ± 0.161 cR None
+256 RACE w/o forgetting (lambda=1) total 0.880 ± 0.038 attack 0.824 ± 0.038 mttd 0.396 ± 0.027 p95 1.967 ± 0.068 cR None
+256 RACE w/o floor (c_min=0) total 0.955 ± 0.038 attack 0.876 ± 0.034 mttd 0.538 ± 0.046 p95 1.933 ± 0.095 cR None
+== E3_whitewash
+64 Uniform total 4.235 ± 0.461 attack 0.000 ± 0.000 mttd 1.929 ± 0.073 p95 7.832 ± 0.318 cR None
+64 Rep-Gated (tuned) total 2.858 ± 0.283 attack 0.000 ± 0.000 mttd 1.167 ± 0.044 p95 5.087 ± 0.220 cR 128
+64 RACE-Audit total 2.772 ± 0.285 attack 0.000 ± 0.000 mttd 2.029 ± 0.154 p95 9.583 ± 0.743 cR None
+64 RACE w/o UCB (kappa=0) total 3.326 ± 0.337 attack 0.000 ± 0.000 mttd 2.352 ± 0.168 p95 10.992 ± 0.783 cR None
+64 RACE w/o forgetting (lambda=1) total 2.674 ± 0.279 attack 0.000 ± 0.000 mttd 1.961 ± 0.149 p95 9.272 ± 0.702 cR None
+64 RACE w/o floor (c_min=0) total 5.979 ± 0.478 attack 0.000 ± 0.000 mttd 8.611 ± 0.919 p95 38.077 ± 9.188 cR None
+256 Uniform total 0.822 ± 0.102 attack 0.000 ± 0.000 mttd 0.290 ± 0.014 p95 1.868 ± 0.119 cR None
+256 Rep-Gated (tuned) total 0.701 ± 0.066 attack 0.000 ± 0.000 mttd 0.258 ± 0.020 p95 1.500 ± 0.185 cR 460
+256 RACE-Audit total 0.359 ± 0.039 attack 0.000 ± 0.000 mttd 0.267 ± 0.033 p95 1.333 ± 0.204 cR None
+256 RACE w/o UCB (kappa=0) total 0.401 ± 0.041 attack 0.000 ± 0.000 mttd 0.305 ± 0.038 p95 1.558 ± 0.186 cR None
+256 RACE w/o forgetting (lambda=1) total 0.326 ± 0.034 attack 0.000 ± 0.000 mttd 0.220 ± 0.023 p95 1.118 ± 0.153 cR None
+256 RACE w/o floor (c_min=0) total 0.397 ± 0.041 attack 0.000 ± 0.000 mttd 0.357 ± 0.052 p95 1.367 ± 0.208 cR None
+== E4
+kappa 0.0 exp 1.307 ± 0.153 att 0.000 ± 0.000
+kappa 0.5 exp 1.162 ± 0.135 att 0.000 ± 0.000
+kappa 1.0 exp 1.082 ± 0.129 att 0.000 ± 0.000
+kappa 2.0 exp 1.001 ± 0.113 att 0.000 ± 0.000
+kappa 3.0 exp 0.964 ± 0.108 att 0.000 ± 0.000
+lambda 0.9 exp 2.051 ± 0.095 att 1.826 ± 0.089
+lambda 0.95 exp 1.856 ± 0.099 att 1.648 ± 0.092
+lambda 0.97 exp 1.761 ± 0.099 att 1.568 ± 0.092
+lambda 0.99 exp 1.747 ± 0.103 att 1.580 ± 0.098
+lambda 1.0 exp 1.913 ± 0.103 att 1.749 ± 0.101
+cmin 0 exp 1.714 ± 0.181 att 0.000 ± 0.000
+cmin 16 exp 1.208 ± 0.129 att 0.000 ± 0.000
+cmin 32 exp 1.082 ± 0.129 att 0.000 ± 0.000
+cmin 64 exp 1.093 ± 0.131 att 0.000 ± 0.000
+cmin 96 exp 1.329 ± 0.154 att 0.000 ± 0.000
+rho_star 0.002 exp 1.767 ± 0.091 att 1.438 ± 0.085
+rho_star 0.005 exp 1.747 ± 0.103 att 1.580 ± 0.098
+rho_star 0.01 exp 2.119 ± 0.114 att 2.018 ± 0.113
+rho_star 0.02 exp 2.810 ± 0.215 att 2.723 ± 0.212
+== E5
+10 {'race_samples': 2528.0, 'uniform_samples': 2560.0, 'race_tiers': [32, 128, 256, 512], 'race_max_c': 512.0, 'failures_per_epoch': 0.64, 'bbls_loc_checks': 9}
+    RACE-Audit ver 0.0002 s | edge tot 0.009 s | edge max 1.77 ms | down 44.0 kB | up 42 B
+    RACE-Audit (measured verifier) 0.00024298700009239838
+    U-HMAC ver 0.0010 s | edge tot 0.009 s | edge max 0.89 ms | down 44.0 kB | up 360 B
+    U-HMAC-T ver 0.0006 s | edge tot 0.009 s | edge max 0.89 ms | down 44.0 kB | up 360 B
+    U-BLS ver 0.1311 s | edge tot 0.072 s | edge max 7.15 ms | down 43.0 kB | up 360 B
+    B-BLS ver 0.0386 s | edge tot 0.072 s | edge max 7.15 ms | down 43.0 kB | up 360 B
+    U-MHT ver 0.0277 s | edge tot 0.006 s | edge max 0.57 ms | down 11632.6 kB | up 360 B
+    EDI-C ver 0.6108 s | edge tot 0.587 s | edge max 58.67 ms | down 2.6 kB | up 360 B
+    B-BLS+loc ver 0.1811 s | edge tot 0.072 s | edge max 7.15 ms | down 43.0 kB | up 360 B
+    RACE-Audit (measured verifier, batches) [0.0003575979999368428, 0.00036335699951450806, 0.00024298700009239838, 0.0002347489999010577, 0.00023417099964717636]
+50 {'race_samples': 12288.0, 'uniform_samples': 12800.0, 'race_tiers': [32, 64, 128, 256, 512, 1024], 'race_max_c': 1024.0, 'failures_per_epoch': 1.48, 'bbls_loc_checks': 11}
+    RACE-Audit ver 0.0005 s | edge tot 0.043 s | edge max 3.53 ms | down 220.0 kB | up 82 B
+    RACE-Audit (measured verifier) 0.0004910299994662637
+    U-HMAC ver 0.0052 s | edge tot 0.044 s | edge max 0.89 ms | down 220.0 kB | up 1800 B
+    U-HMAC-T ver 0.0031 s | edge tot 0.044 s | edge max 0.89 ms | down 220.0 kB | up 1800 B
+    U-BLS ver 0.6557 s | edge tot 0.358 s | edge max 7.15 ms | down 215.2 kB | up 1800 B
+    B-BLS ver 0.1513 s | edge tot 0.358 s | edge max 7.15 ms | down 215.2 kB | up 1800 B
+    U-MHT ver 0.1385 s | edge tot 0.028 s | edge max 0.57 ms | down 58163.2 kB | up 1800 B
+    EDI-C ver 3.0538 s | edge tot 2.934 s | edge max 58.67 ms | down 12.8 kB | up 1800 B
+    B-BLS+loc ver 0.6459 s | edge tot 0.358 s | edge max 7.15 ms | down 215.2 kB | up 1800 B
+    RACE-Audit (measured verifier, batches) [0.0004984460001651314, 0.0005464440000650939, 0.0004910299994662637, 0.000473915999464225, 0.0004875880003964994]
+100 {'race_samples': 25024.0, 'uniform_samples': 25600.0, 'race_tiers': [32, 64, 128, 256, 512, 1024], 'race_max_c': 1024.0, 'failures_per_epoch': 3.2066666666666666, 'bbls_loc_checks': 35}
+    RACE-Audit ver 0.0006 s | edge tot 0.087 s | edge max 3.53 ms | down 440.0 kB | up 132 B
+    RACE-Audit (measured verifier) 0.0005753080004069488
+    U-HMAC ver 0.0104 s | edge tot 0.089 s | edge max 0.89 ms | down 440.0 kB | up 3600 B
+    U-HMAC-T ver 0.0062 s | edge tot 0.089 s | edge max 0.89 ms | down 440.0 kB | up 3600 B
+    U-BLS ver 1.3115 s | edge tot 0.715 s | edge max 7.15 ms | down 430.4 kB | up 3600 B
+    B-BLS ver 0.2773 s | edge tot 0.715 s | edge max 7.15 ms | down 430.4 kB | up 3600 B
+    U-MHT ver 0.2769 s | edge tot 0.057 s | edge max 0.57 ms | down 116326.4 kB | up 3600 B
+    EDI-C ver 6.1075 s | edge tot 5.867 s | edge max 58.67 ms | down 25.6 kB | up 3600 B
+    B-BLS+loc ver 1.6730 s | edge tot 0.715 s | edge max 7.15 ms | down 430.4 kB | up 3600 B
+    RACE-Audit (measured verifier, batches) [0.0005713259997719433, 0.000582977000703977, 0.000573512999835657, 0.0005753080004069488, 0.000822515999971074]
+200 {'race_samples': 48896.0, 'uniform_samples': 51200.0, 'race_tiers': [32, 64, 128, 256, 512, 1024], 'race_max_c': 1024.0, 'failures_per_epoch': 6.26, 'bbls_loc_checks': 53}
+    RACE-Audit ver 0.0007 s | edge tot 0.170 s | edge max 3.53 ms | down 880.0 kB | up 232 B
+    RACE-Audit (measured verifier) 0.0007266479997269926
+    U-HMAC ver 0.0209 s | edge tot 0.178 s | edge max 0.89 ms | down 880.0 kB | up 7200 B
+    U-HMAC-T ver 0.0124 s | edge tot 0.178 s | edge max 0.89 ms | down 880.0 kB | up 7200 B
+    U-BLS ver 2.6229 s | edge tot 1.430 s | edge max 7.15 ms | down 860.8 kB | up 7200 B
+    B-BLS ver 0.5116 s | edge tot 1.430 s | edge max 7.15 ms | down 860.8 kB | up 7200 B
+    U-MHT ver 0.5539 s | edge tot 0.114 s | edge max 0.57 ms | down 232652.8 kB | up 7200 B
+    EDI-C ver 12.2151 s | edge tot 11.735 s | edge max 58.67 ms | down 51.2 kB | up 7200 B
+    B-BLS+loc ver 3.1869 s | edge tot 1.430 s | edge max 7.15 ms | down 860.8 kB | up 7200 B
+    RACE-Audit (measured verifier, batches) [0.0007302180001715897, 0.0007402809997074655, 0.0007004409999353811, 0.0007042339993859059, 0.0007266479997269926]
+500 {'race_samples': 123424.0, 'uniform_samples': 128000.0, 'race_tiers': [32, 64, 128, 256, 512, 1024], 'race_max_c': 1024.0, 'failures_per_epoch': 14.926666666666666, 'bbls_loc_checks': 157}
+    RACE-Audit ver 0.0012 s | edge tot 0.428 s | edge max 3.53 ms | down 2200.0 kB | up 532 B
+    RACE-Audit (measured verifier) 0.0013297420000526472
+    U-HMAC ver 0.0521 s | edge tot 0.444 s | edge max 0.89 ms | down 2200.0 kB | up 18000 B
+    U-HMAC-T ver 0.0310 s | edge tot 0.444 s | edge max 0.89 ms | down 2200.0 kB | up 18000 B
+    U-BLS ver 6.5573 s | edge tot 3.575 s | edge max 7.15 ms | down 2152.0 kB | up 18000 B
+    B-BLS ver 1.2384 s | edge tot 3.575 s | edge max 7.15 ms | down 2152.0 kB | up 18000 B
+    U-MHT ver 1.3847 s | edge tot 0.285 s | edge max 0.57 ms | down 581632.0 kB | up 18000 B
+    EDI-C ver 30.5377 s | edge tot 29.337 s | edge max 58.67 ms | down 128.0 kB | up 18000 B
+    B-BLS+loc ver 10.3832 s | edge tot 3.575 s | edge max 7.15 ms | down 2152.0 kB | up 18000 B
+    RACE-Audit (measured verifier, batches) [0.0013258540002425434, 0.0014083010000831564, 0.0015411329995913547, 0.0012515640000856365, 0.0013297420000526472]
+1000 {'race_samples': 245568.0, 'uniform_samples': 256000.0, 'race_tiers': [32, 64, 128, 256, 512, 1024], 'race_max_c': 1024.0, 'failures_per_epoch': 28.020000000000003, 'bbls_loc_checks': 311}
+    RACE-Audit ver 0.0020 s | edge tot 0.852 s | edge max 3.53 ms | down 4400.0 kB | up 1032 B
+    RACE-Audit (measured verifier) 0.001905065999380895
+    U-HMAC ver 0.1043 s | edge tot 0.888 s | edge max 0.89 ms | down 4400.0 kB | up 36000 B
+    U-HMAC-T ver 0.0620 s | edge tot 0.888 s | edge max 0.89 ms | down 4400.0 kB | up 36000 B
+    U-BLS ver 13.1145 s | edge tot 7.150 s | edge max 7.15 ms | down 4304.0 kB | up 36000 B
+    B-BLS ver 2.4724 s | edge tot 7.150 s | edge max 7.15 ms | down 4304.0 kB | up 36000 B
+    U-MHT ver 2.7693 s | edge tot 0.570 s | edge max 0.57 ms | down 1163264.0 kB | up 36000 B
+    EDI-C ver 61.0754 s | edge tot 58.675 s | edge max 58.67 ms | down 256.0 kB | up 36000 B
+    B-BLS+loc ver 23.1698 s | edge tot 7.150 s | edge max 7.15 ms | down 4304.0 kB | up 36000 B
+    RACE-Audit (measured verifier, batches) [0.001909628000248631, 0.001886911000838154, 0.001914602999931958, 0.001905065999380895, 0.0018959019998874282]
+== E6
+1 {'q_diff': [9.0, 0.0], 'q_plain': [18.0, 0.0], 'bound': 9, 'bytes_diff': 39600.0, 'bytes_plain': 79200.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.005628797499866778, 'rounds': 9.0}
+2 {'q_diff': [16.6, 0.3694087177891799], 'q_plain': [33.2, 0.7388174355783598], 'bound': 18, 'bytes_diff': 73040.0, 'bytes_plain': 146080.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.005595743500180106, 'rounds': 9.0}
+4 {'q_diff': [28.3, 1.1706040995225087], 'q_plain': [56.6, 2.3412081990450173], 'bound': 36, 'bytes_diff': 124520.0, 'bytes_plain': 249040.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.009379061500112584, 'rounds': 9.0}
+8 {'q_diff': [48.4, 2.412967640318085], 'q_plain': [96.8, 4.82593528063617], 'bound': 72, 'bytes_diff': 212960.0, 'bytes_plain': 425920.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.009205377999933262, 'rounds': 9.0}
+16 {'q_diff': [83.2, 4.154821813086418], 'q_plain': [166.4, 8.309643626172836], 'bound': 144, 'bytes_diff': 366080.0, 'bytes_plain': 732160.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.016709923499547585, 'rounds': 9.0}
+32 {'q_diff': [140.1, 1.8911537669917304], 'q_plain': [280.2, 3.782307533983461], 'bound': 288, 'bytes_diff': 616440.0, 'bytes_plain': 1232880.0, 'bytes_reveal': 2105344, 'bytes_mht': 2326528, 'time_diff': 0.01554010650033888, 'rounds': 9.0}
+E7 {'100': 0.00040512959985790077, '1000': 0.0006048487999578356, '10000': 0.002274960800059489, '100000': 0.02067326699998375}
+tier util {'64': 0.9813500000000001, '128': 0.9386249999999999, '256': 0.96795, '512': 0.9813875}
+== E8 field-calibrated fleet
+g1_B64_phi0 U 0.012 ± 0.004 RG 0.029 ± 0.007 cR 128 RACE 0.016 ± 0.004 red vs U -0.338 p(RACE better) 9.86e-01 p(U better) 1.44e-02
+g1_B64_phi0.001 U 0.178 ± 0.103 RG 0.104 ± 0.036 cR 256 RACE 0.028 ± 0.007 red vs U 0.843 p(RACE better) 1.93e-07 p(U better) 1.00e+00
+g1_B64_phi0.002 U 0.177 ± 0.068 RG 0.102 ± 0.024 cR 256 RACE 0.038 ± 0.009 red vs U 0.787 p(RACE better) 5.12e-08 p(U better) 1.00e+00
+g1_B64_phi0.005 U 0.491 ± 0.164 RG 0.186 ± 0.040 cR 256 RACE 0.058 ± 0.011 red vs U 0.882 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B64_phi0.01 U 1.279 ± 0.191 RG 0.388 ± 0.050 cR 256 RACE 0.141 ± 0.021 red vs U 0.890 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B64_phi0.02 U 2.646 ± 0.403 RG 0.759 ± 0.093 cR 256 RACE 0.267 ± 0.021 red vs U 0.899 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B64_phi0.05 U 6.495 ± 0.645 RG 1.781 ± 0.171 cR 256 RACE 0.686 ± 0.045 red vs U 0.894 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B64_phi0.1 U 12.714 ± 0.776 RG 3.564 ± 0.193 cR 256 RACE 1.813 ± 0.092 red vs U 0.857 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B256_phi0 U 0.001 ± 0.001 RG 0.001 ± 0.001 cR 128 RACE 0.003 ± 0.002 red vs U -1.324 p(RACE better) 9.71e-01 p(U better) 2.93e-02
+g1_B256_phi0.001 U 0.039 ± 0.034 RG 0.036 ± 0.016 cR 460 RACE 0.005 ± 0.002 red vs U 0.859 p(RACE better) 1.14e-03 p(U better) 9.99e-01
+g1_B256_phi0.002 U 0.031 ± 0.016 RG 0.031 ± 0.016 cR 128 RACE 0.007 ± 0.003 red vs U 0.781 p(RACE better) 6.57e-04 p(U better) 9.99e-01
+g1_B256_phi0.005 U 0.093 ± 0.035 RG 0.057 ± 0.015 cR 460 RACE 0.010 ± 0.003 red vs U 0.888 p(RACE better) 2.66e-06 p(U better) 1.00e+00
+g1_B256_phi0.01 U 0.252 ± 0.044 RG 0.119 ± 0.018 cR 460 RACE 0.026 ± 0.006 red vs U 0.897 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B256_phi0.02 U 0.544 ± 0.087 RG 0.221 ± 0.025 cR 1024 RACE 0.052 ± 0.007 red vs U 0.904 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B256_phi0.05 U 1.297 ± 0.145 RG 0.458 ± 0.031 cR 1024 RACE 0.121 ± 0.012 red vs U 0.907 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g1_B256_phi0.1 U 2.531 ± 0.177 RG 1.008 ± 0.040 cR 1024 RACE 0.280 ± 0.019 red vs U 0.890 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B64_phi0 U 0.157 ± 0.015 RG 0.352 ± 0.015 cR 128 RACE 0.209 ± 0.015 red vs U -0.331 p(RACE better) 1.00e+00 p(U better) 1.52e-05
+g10_B64_phi0.001 U 0.324 ± 0.104 RG 0.452 ± 0.071 cR 128 RACE 0.223 ± 0.016 red vs U 0.309 p(RACE better) 4.60e-02 p(U better) 9.56e-01
+g10_B64_phi0.002 U 0.322 ± 0.068 RG 0.449 ± 0.038 cR 128 RACE 0.233 ± 0.018 red vs U 0.276 p(RACE better) 6.42e-03 p(U better) 9.94e-01
+g10_B64_phi0.005 U 0.636 ± 0.160 RG 0.620 ± 0.085 cR 128 RACE 0.260 ± 0.019 red vs U 0.592 p(RACE better) 1.02e-07 p(U better) 1.00e+00
+g10_B64_phi0.01 U 1.424 ± 0.187 RG 1.050 ± 0.109 cR 128 RACE 0.349 ± 0.029 red vs U 0.755 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B64_phi0.02 U 2.787 ± 0.403 RG 1.562 ± 0.106 cR 256 RACE 0.486 ± 0.028 red vs U 0.826 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B64_phi0.05 U 6.635 ± 0.646 RG 2.682 ± 0.175 cR 256 RACE 0.955 ± 0.048 red vs U 0.856 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B64_phi0.1 U 12.844 ± 0.780 RG 4.778 ± 0.211 cR 256 RACE 2.146 ± 0.108 red vs U 0.833 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B256_phi0 U 0.009 ± 0.002 RG 0.009 ± 0.002 cR 128 RACE 0.020 ± 0.003 red vs U -1.107 p(RACE better) 1.00e+00 p(U better) 1.57e-07
+g10_B256_phi0.001 U 0.047 ± 0.035 RG 0.047 ± 0.035 cR 128 RACE 0.023 ± 0.003 red vs U 0.515 p(RACE better) 3.96e-01 p(U better) 6.12e-01
+g10_B256_phi0.002 U 0.039 ± 0.015 RG 0.039 ± 0.015 cR 128 RACE 0.024 ± 0.004 red vs U 0.382 p(RACE better) 1.64e-01 p(U better) 8.41e-01
+g10_B256_phi0.005 U 0.102 ± 0.036 RG 0.102 ± 0.036 cR 128 RACE 0.028 ± 0.005 red vs U 0.722 p(RACE better) 2.57e-06 p(U better) 1.00e+00
+g10_B256_phi0.01 U 0.261 ± 0.044 RG 0.261 ± 0.044 cR 128 RACE 0.045 ± 0.007 red vs U 0.828 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B256_phi0.02 U 0.552 ± 0.087 RG 0.432 ± 0.032 cR 460 RACE 0.073 ± 0.009 red vs U 0.867 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B256_phi0.1 U 2.538 ± 0.177 RG 1.282 ± 0.069 cR 460 RACE 0.312 ± 0.021 red vs U 0.877 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+g10_B256_phi0.05 U 1.305 ± 0.145 RG 0.750 ± 0.052 cR 460 RACE 0.147 ± 0.013 red vs U 0.887 p(RACE better) 9.31e-10 p(U better) 1.00e+00
+== networked deployment
+Uniform {'N': 64.0, 'T': 200.0, 'Bn': 256.0, 'exposure': 0.527282360230667, 'exposure_unw': 0.55, 'mttd': 0.29382802966870397, 'episodes': 355.0, 'detections': 354.8, 'false_positives': 0.0, 'repairs_clean': 354.8, 'verifier_ms': 10.705657648994475, 'node_cpu_total_ms': 77.24031969100008, 'proof_kb': 281.856, 'challenge_b': 2624.0, 'samples': 16384.0, 'repair_blocks': 154.36625476717896, 'repair_queries': 1005.9526934885973, 'repair_rounds': 16.0, 'repair_kb': 5703.443405679337, 'seeds': [100, 101, 102, 103, 104], 'episodes_total': 1775, 'detections_total': 1774, 'false_positives_total': 0, 'repairs_clean_total': 1774, 'exposure_ci': [0.527282360230667, 0.30404835783205003], 'sim_exposure_mean': 0.533249745390573, 'within_sim_band': 4}
+    {'seed': 100, 'deploy': 0.8068694652709786, 'sim_mean': 0.689977277767613, 'sim_lo': 0.5626303450454897, 'sim_hi': 0.8720470748693241, 'sim_mttd': 0.33217743747200057, 'deploy_mttd': 0.353887399463807}
+    {'seed': 101, 'deploy': 0.5753440311066063, 'sim_mean': 0.5635648325362929, 'sim_lo': 0.4889924193691136, 'sim_hi': 0.7109379761517368, 'sim_mttd': 0.3342226044994661, 'deploy_mttd': 0.35180722891566263}
+    {'seed': 102, 'deploy': 0.6990299075531268, 'sim_mean': 0.63829147966854, 'sim_lo': 0.5014368456148363, 'sim_hi': 0.7947689674991484, 'sim_mttd': 0.34443472556488525, 'deploy_mttd': 0.3369098712446352}
+    {'seed': 103, 'deploy': 0.3284474214296407, 'sim_mean': 0.364053971831724, 'sim_lo': 0.23397145318475696, 'sim_hi': 0.4992003860465442, 'sim_mttd': 0.31079505494356596, 'deploy_mttd': 0.2651006711409396}
+    {'seed': 104, 'deploy': 0.22672097579298253, 'sim_mean': 0.41036116514869486, 'sim_lo': 0.3138435227652503, 'sim_hi': 0.5594717108355494, 'sim_mttd': 0.22389135434167357, 'deploy_mttd': 0.16143497757847533}
+RACE-Audit {'N': 64.0, 'T': 200.0, 'Bn': 256.0, 'exposure': 0.17200188219830234, 'exposure_unw': 0.277, 'mttd': 0.15608796484935933, 'episodes': 363.2, 'detections': 362.6, 'false_positives': 0.0, 'repairs_clean': 362.6, 'verifier_ms': 0.8769891910183105, 'node_cpu_total_ms': 73.13865121899997, 'proof_kb': 281.856, 'challenge_b': 2624.0, 'samples': 15674.816, 'repair_blocks': 152.91756253331144, 'repair_queries': 997.8330102058138, 'repair_rounds': 16.0, 'repair_kb': 5655.721921450639, 'seeds': [100, 101, 102, 103, 104], 'episodes_total': 1816, 'detections_total': 1813, 'false_positives_total': 0, 'repairs_clean_total': 1813, 'exposure_ci': [0.17200188219830234, 0.03820368079903576], 'sim_exposure_mean': 0.14905309688576313, 'within_sim_band': 4}
+    {'seed': 100, 'deploy': 0.18149154949181479, 'sim_mean': 0.16193752189893237, 'sim_lo': 0.10413085557777815, 'sim_hi': 0.22060805844034334, 'sim_mttd': 0.13072136511646343, 'deploy_mttd': 0.14705882352941177}
+    {'seed': 101, 'deploy': 0.21400407236548402, 'sim_mean': 0.18635223108684695, 'sim_lo': 0.11779176921425558, 'sim_hi': 0.2568493874550106, 'sim_mttd': 0.1426619658223592, 'deploy_mttd': 0.1359447004608295}
+    {'seed': 102, 'deploy': 0.17668004557163666, 'sim_mean': 0.19619095860613076, 'sim_lo': 0.12877593353678687, 'sim_hi': 0.2776144713432866, 'sim_mttd': 0.19119842370383083, 'deploy_mttd': 0.15306122448979592}
+    {'seed': 103, 'deploy': 0.15682138634769147, 'sim_mean': 0.10654314685660618, 'sim_lo': 0.06377856536582796, 'sim_hi': 0.15609570131560557, 'sim_mttd': 0.11790185309205949, 'deploy_mttd': 0.1541095890410959}
+    {'seed': 104, 'deploy': 0.13101235721488483, 'sim_mean': 0.09424162598029936, 'sim_lo': 0.043932993742384865, 'sim_hi': 0.1470755237257609, 'sim_mttd': 0.11006983557285951, 'deploy_mttd': 0.1902654867256637}
+reduction deploy 0.674 sim 0.720
+RACE-Audit {'verifier_s': [0.0011019625001154054, 0.0009881430000859837, 0.0011245847500731543], 'wall_s': [0.0958142824999868, 0.09207500199988772, 0.10228273550001177], 'up': [2624.0, 2624.0, 2624.0], 'down': [281856.0, 281856.0, 281856.0], 'node_cpu_total': [0.08073180899999682, 0.07503690124999743, 0.08875163549999937], 'node_cpu_max': [0.004981158999999735, 0.004261050999999849, 0.005881348750000015], 'epochs': 30, 'samples': 16050.133333333333, 'tiers': [32, 64, 128, 256, 512, 1024], 'groups': 6.9}
+U-HMAC {'verifier_s': [0.00972660200000064, 0.008310267500064583, 0.011377799999991112], 'wall_s': [0.10668759150007645, 0.10140639824999198, 0.11196296299999631], 'up': [2624.0, 2624.0, 2624.0], 'down': [281856.0, 281856.0, 281856.0], 'node_cpu_total': [0.08645210549999913, 0.08112476024999964, 0.09383338474999992], 'node_cpu_max': [0.0017819710000000488, 0.001687592500000279, 0.0019041952500001291], 'epochs': 30}
+U-MHT {'verifier_s': [0.30584665400010635, 0.258217417749961, 0.3775958527498915], 'wall_s': [0.4649714124998354, 0.4040172272500513, 0.5245727285001749], 'up': [2624.0, 2624.0, 2624.0], 'down': [74449152.0, 74449152.0, 74449152.0], 'node_cpu_total': [0.14514732749999892, 0.13522616274999985, 0.1626855874999975], 'node_cpu_max': [0.0029424334999999524, 0.0028698772500000136, 0.0031410789999999633], 'epochs': 30}
+repair {'blocks': 185.94117647058823, 'queries': 1141.9117647058824, 'rounds': 16.0, 'wall_s': 1.101832326205875, 'up': 772911.8823529412, 'down': 5789218.882352941, 'n': 34}
+meta {'mac': {'N': 64, 'Bn': 256, 'epochs': 30, 'rtt_ms': [10.0, 50.0], 'rtt_mean_ms': 27.410114250162326, 'rtt_max_ms': 49.55094394692617, 'no_false_alarms': True}, 'bls': {'N': 64, 'Bn': 256, 'epochs': 20, 'rtt_ms': [10.0, 50.0], 'rtt_mean_ms': 27.410114250162326, 'rtt_max_ms': 49.55094394692617, 'no_false_alarms': True}, 'edic': {'N': 64, 'Bn': 256, 'epochs': 20, 'rtt_ms': [10.0, 50.0], 'rtt_mean_ms': 27.410114250162326, 'rtt_max_ms': 49.55094394692617, 'no_false_alarms': True}}
+U-BLS {'verifier_s': [0.9857767895000507, 0.9459618684999214, 1.08729641525008], 'wall_s': [1.3304988380000395, 1.2876954717499984, 1.4129687170002398], 'up': [2624.0, 2624.0, 2624.0], 'down': [275712.0, 275712.0, 275712.0], 'node_cpu_total': [0.5454478165000003, 0.5087296692500003, 0.6886217017500001], 'node_cpu_max': [0.012175387499999968, 0.009968483500000042, 0.014540744749999973], 'epochs': 20}
+EDI-C {'verifier_s': [4.247814958999925, 4.093284373249844, 4.404929579750046], 'wall_s': [6.563911572499819, 6.2409562932501785, 6.895747333999907], 'up': [2624.0, 2624.0, 2624.0], 'down': [16640.0, 16640.0, 16640.0], 'node_cpu_total': [4.1788359335, 4.01900068825, 4.546208131749999], 'node_cpu_max': [0.17646934499999978, 0.07771061974999993, 0.3793133289999999], 'epochs': 20}

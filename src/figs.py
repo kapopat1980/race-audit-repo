@@ -10,7 +10,7 @@ for _s in ["E1", "E2", "E3", "E4", "E5"]:
     R.update(json.load(open(f"results/res_{_s}.json")))
 C = {"RACE-Audit": "#2a78d6", "Uniform": "#eb6834", "Rep-Gated (tuned)": "#1baf7a",
      "U-HMAC": "#eb6834", "U-BLS": "#e87ba4", "B-BLS": "#6250d6", "B-BLS+loc": "#6250d6",
-     "U-MHT": "#008300"}
+     "U-MHT": "#008300", "EDI-C": "#8a6d00"}
 INK, INK2, GRID = "#0b0b0b", "#52514e", "#e4e3df"
 plt.rcParams.update({"font.family": "Liberation Sans", "ps.fonttype": 42, "pdf.fonttype": 42, "font.size": 9, "axes.edgecolor": INK2,
                      "axes.labelcolor": INK, "xtick.color": INK2, "ytick.color": INK2,
@@ -20,13 +20,13 @@ plt.rcParams.update({"font.family": "Liberation Sans", "ps.fonttype": 42, "pdf.f
 TYPE_NAMES = ["reliable", "flaky", "malicious", "on-off"]
 
 import os
-os.makedirs("figures/submission", exist_ok=True)
+os.makedirs("figs/submission", exist_ok=True)
 def save(fig, name):
     fig.tight_layout()
-    fig.savefig(f"figures/{name}.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(f"figs/{name}.png", bbox_inches="tight", facecolor="white")
     num = name.split("_")[0].replace("fig", "")
-    fig.savefig(f"figures/submission/Fig{num}.eps", bbox_inches="tight", facecolor="white")
-    fig.savefig(f"figures/submission/Fig{num}.tif", bbox_inches="tight", facecolor="white", dpi=600,
+    fig.savefig(f"figs/submission/Fig{num}.eps", bbox_inches="tight", facecolor="white")
+    fig.savefig(f"figs/submission/Fig{num}.tif", bbox_inches="tight", facecolor="white", dpi=600,
                 pil_kwargs={"compression": "tiff_lzw"})
     plt.close(fig)
 
@@ -118,19 +118,19 @@ save(fig, "fig4_adversarial")
 
 # ---------------------------------------------------------------- Fig 5 cost vs N
 E5 = R["E5_cost"]; Ns = sorted(map(int, E5))
-schemes = ["RACE-Audit", "U-HMAC", "U-MHT", "B-BLS+loc", "U-BLS"]
+schemes = ["RACE-Audit", "U-HMAC", "U-MHT", "B-BLS+loc", "U-BLS", "EDI-C"]
 fig, axs = plt.subplots(1, 3, figsize=(7.2, 2.7))
 for s in schemes:
     for ax, k, lab, sc in [(axs[0], 0, "Verifier time per epoch (s)", 1), (axs[1], 2, "Slowest edge-node proof (ms)", 1e3),
                            (axs[2], 3, "Proof traffic per epoch (MB)", 1e-6)]:
-        y = [E5[str(n)][s][k] * sc for n in Ns]
+        y = [(E5[str(n)]["RACE-Audit (measured verifier)"] if (s == "RACE-Audit" and k == 0) else E5[str(n)][s][k]) * sc for n in Ns]
         ax.plot(Ns, y, marker="o", ms=3.5, color=C[s], label=s.replace("+loc", " (+loc.)"), lw=1.6,
                 ls="-" if s == "RACE-Audit" else "--")
 for ax in axs:
     ax.set_xscale("log"); ax.set_yscale("log"); ax.set_xlabel("Edge nodes N")
 axs[0].set_ylabel("Verifier time per epoch (s)"); axs[1].set_ylabel("Slowest edge proof (ms)"); axs[2].set_ylabel("Proof traffic per epoch (MB)")
 handles, labels = axs[0].get_legend_handles_labels()
-fig.legend(handles, labels, loc="upper center", ncol=5, fontsize=7.2, bbox_to_anchor=(0.5, 1.07))
+fig.legend(handles, labels, loc="upper center", ncol=6, fontsize=7.2, bbox_to_anchor=(0.5, 1.07))
 save(fig, "fig5_cost")
 
 # ---------------------------------------------------------------- Fig 6 localisation
@@ -164,4 +164,54 @@ for ax, k, lab, met, xl in [(axs[0], "kappa", "UCB width kappa", "exposure", "wh
     ax.set_xlabel(lab); ax.set_title(xl, fontsize=8, color=INK2)
 axs[0].set_ylabel("Exposure")
 save(fig, "fig7_sensitivity")
+
+# ---------------------------------------------------------------- Fig 8 field-calibrated fleet
+E8 = json.load(open("results/res_E8.json")); PHI = E8["phi"]; cells = E8["cells"]
+fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.8), sharey=True)
+xs = range(len(PHI))
+for ax, Bn in zip(axs, (64, 256)):
+    for g, col, mk in ((1, C["RACE-Audit"], "o"), (10, C["Uniform"], "s")):
+        ratio, lo, hi = [], [], []
+        for ph in PHI:
+            c = cells["g%d_B%d_phi%g" % (g, Bn, ph)]
+            u, r = np.array(c["Uniform"]["raw"]), np.array(c["RACE-Audit"]["raw"])
+            rng = np.random.default_rng(1); b = rng.integers(0, len(u), (4000, len(u)))       # paired bootstrap over seeds
+            bs = r[b].mean(axis=1) / u[b].mean(axis=1)
+            ratio.append(r.mean() / u.mean()); lo.append(np.percentile(bs, 2.5)); hi.append(np.percentile(bs, 97.5))
+        ratio, lo, hi = map(np.array, (ratio, lo, hi))
+        ax.errorbar(xs, ratio, yerr=[ratio - lo, hi - ratio], marker=mk, ms=4.5, color=col, capsize=2, lw=1.6, label=f"fault intensity γ = {g}")
+    ax.axhline(1, color=INK2, lw=1, ls=":")
+    ax.text(len(PHI) - 1, 1.08, "uniform sampling", ha="right", va="bottom", fontsize=7.2, color=INK2)
+    ax.set_yscale("log"); ax.set_xticks(list(xs)); ax.set_xticklabels([f"{100 * p:g}" for p in PHI])
+    ax.set_xlabel("Unreliable nodes φ (% of fleet)"); ax.set_title(f"B/N = {Bn}", fontsize=8.5, color=INK2)
+axs[0].set_ylabel("Exposure, RACE-Audit / Uniform"); axs[0].legend(fontsize=7.4, loc="lower left")
+axs[0].set_yticks([0.1, 0.2, 0.5, 1, 2, 3]); axs[0].set_yticklabels(["0.1", "0.2", "0.5", "1", "2", "3"])
+save(fig, "fig8_field")
+
+# ---------------------------------------------------------------- Fig 9 networked deployment
+DP = json.load(open("results/deploy_summary.json"))
+fig, axs = plt.subplots(1, 2, figsize=(7.2, 2.9))
+ax = axs[0]
+allv = []
+for name, mk in (("Uniform", "s"), ("RACE-Audit", "o")):
+    rows = DP["detect"][name]["per_seed"]
+    x = np.array([r["sim_mean"] for r in rows]); y = np.array([r["deploy"] for r in rows])
+    ax.errorbar(x, y, xerr=[x - np.array([r["sim_lo"] for r in rows]), np.array([r["sim_hi"] for r in rows]) - x], fmt=mk, ms=5, color=C[name],
+                ecolor=C[name], elinewidth=1, capsize=2, label=name, mec="white", mew=0.8)
+    allv += list(x) + list(y)
+lo, hi = min(allv) * 0.6, max(allv) * 1.6
+ax.plot([lo, hi], [lo, hi], color=INK2, lw=1, ls=":"); ax.set_xscale("log"); ax.set_yscale("log"); ax.set_xlim(lo, hi); ax.set_ylim(lo, hi)
+ax.set_xlabel("Exposure predicted by the simulator (mean, 95% band)"); ax.set_ylabel("Exposure measured in the deployment"); ax.legend(fontsize=7.4, loc="upper left")
+ax = axs[1]
+order = ["RACE-Audit", "U-HMAC", "U-MHT", "U-BLS", "EDI-C"]; Cc = DP["cost"]
+yy = np.arange(len(order))[::-1]
+v = [Cc[s_]["verifier_s"][0] * 1e3 for s_ in order]; e = [Cc[s_]["node_cpu_total"][0] * 1e3 for s_ in order]
+ax.barh(yy + 0.19, v, height=0.34, color="#2a78d6", label="verifier", edgecolor="white", lw=0.8)
+ax.barh(yy - 0.19, e, height=0.34, color="#9ec5f4", label="all 64 nodes", edgecolor="white", lw=0.8)
+for y_, a_, b_ in zip(yy, v, e):
+    ax.text(a_ * 1.15, y_ + 0.19, f"{a_:,.2f}" if a_ < 10 else f"{a_:,.0f}", va="center", fontsize=7, color=INK2)
+    ax.text(b_ * 1.15, y_ - 0.19, f"{b_:,.0f}", va="center", fontsize=7, color=INK2)
+ax.set_xscale("log"); ax.set_yticks(yy); ax.set_yticklabels(order); ax.set_xlabel("Computation per epoch (ms)"); ax.grid(axis="y", visible=False)
+ax.set_xlim(min(v) * 0.5, max(max(v), max(e)) * 8); ax.legend(fontsize=7.4, loc="upper right")
+save(fig, "fig9_deployment")
 print("figures done")

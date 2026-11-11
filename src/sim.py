@@ -54,9 +54,9 @@ class Uniform:
 
 
 class RepGated:
-    """Reputation-gated auditing (EDI-C / dynamic-assignment style): Beta mean
+    """Generic reputation-priority auditing (not a published scheme): Beta mean
     reputation without forgetting; audits the M least-reputable nodes (plus
-    eps-random exploration) at a fixed sample size giving 99% detection at 1%."""
+    eps-random exploration) at a fixed sample size c_R."""
     name = "Rep-Gated"
     def __init__(s, N, B, rng, cR=460, eps=0.2, **kw):
         s.N, s.B, s.cR, s.eps, s.rng = N, B, cR, eps, rng
@@ -101,11 +101,11 @@ class Race:
 
 # ------------------------------------------------------------------ epoch simulation
 def run(strategy_factory, N=100, B_per_node=256, epochs=300, seed=0, onoff=0, onoff_start=100,
-        onoff_rho=0.003, onoff_p=0.5, whitewash=False, mix=(0.7, 0.2, 0.1), record_alloc=False):
+        onoff_rho=0.003, onoff_p=0.5, whitewash=False, mix=(0.7, 0.2, 0.1), record_alloc=False, pop_fn=None, fault_seed=None):
     rng = np.random.default_rng(seed)
-    pop = make_population(N, rng, mix=mix, onoff=onoff)
-    srng = np.random.default_rng(seed + 10_000)        # identical corruption stream across strategies
-    strat = strategy_factory(N=N, B=N * B_per_node, rng=np.random.default_rng(seed + 20_000))
+    pop = pop_fn(N, rng) if pop_fn else make_population(N, rng, mix=mix, onoff=onoff)
+    srng = np.random.default_rng(seed + 10_000 if fault_seed is None else fault_seed)   # identical corruption stream across strategies
+    strat = strategy_factory(N=N, B=N * B_per_node, rng=np.random.default_rng(seed + 20_000), classes=pop.get("classes"))
     corrupt = np.zeros(N, bool)
     d = np.zeros(N)
     onset = np.full(N, -1)
@@ -189,28 +189,36 @@ def epoch_costs(c, n_fail_groups=0, n_tiers_used=None):
     a = c[c > 0]
     Na = len(a)
     res = {}
-    # RACE (MAC tags, shared tau prefix, consensus grouping)
+    # RACE (MAC tags, one challenge expansion and one tau prefix for the fleet, consensus grouping)
     groups = (len(np.unique(a)) if n_tiers_used is None else n_tiers_used) + n_fail_groups
-    v = float(interp(pc["mac_tau"], a.max())) + groups * BENCH["t_mac_check"] + Na * BENCH["t_eq_compare"]
-    e = interp(pc["mac_prove"], a)
+    v = float(interp(pc["expand"], a.max())) + float(interp(pc["mac_tau"], a.max())) + groups * BENCH["t_mac_check"] + Na * BENCH["t_group"]
+    xp = interp(pc["expand"], a)                       # every prover expands its own challenge
+    e = xp + interp(pc["mac_prove"], a)
     resp = (S_SECT + 1) * FE_BYTES
     res["RACE-Audit"] = (v, e.sum(), e.max(), Na * resp, 32 + len(c))
-    # U-HMAC (same tags, independent per-node challenges)
-    v = float((interp(pc["mac_tau"], a) + BENCH["t_mac_check"]).sum())
+    # U-HMAC (same tags, independent per-node challenges; stateless verifier)
+    v = float((xp + interp(pc["mac_tau"], a) + BENCH["t_mac_check"]).sum())
     res["U-HMAC"] = (v, e.sum(), e.max(), Na * resp, Na * 36)
+    # U-HMAC with a verifier-side table of all n PRF masks (16 n bytes of secret state per file)
+    v = float((xp + interp(pc["mac_tau_cached"], a) + BENCH["t_mac_check"]).sum())
+    res["U-HMAC-T"] = (v, e.sum(), e.max(), Na * resp, Na * 36)
+    # EDI-C (homomorphic hash in a 2048-bit group; the verifier recomputes the hash from its own replica)
+    ee = xp + interp(pc["edic_prove"], a)
+    v = float((xp + interp(pc["edic_verify"], a)).sum())
+    res["EDI-C"] = (v, ee.sum(), ee.max(), Na * BENCH["edic_proof_bytes"], Na * 36)
     # U-BLS (per-node pairing verification)
-    eb = interp(pc["bls_prove"], a)
-    v = float(interp(pc["bls_verify"], a).sum())
+    eb = xp + interp(pc["bls_prove"], a)
+    v = float((xp + interp(pc["bls_verify"], a)).sum())
     rb = 48 + S_BLS * 32
     res["U-BLS"] = (v, eb.sum(), eb.max(), Na * rb, Na * 36)
     # B-BLS (aggregate verification, single pairing product)
     m = a.sum() + S_BLS
-    v = m * multiexp_pt(m) + m * BENCH["t_scal_conv"] + Na * BENCH["t_g1_add"] + 2 * BENCH["t_pairing"]
+    v = float(xp.sum()) + m * multiexp_pt(m) + m * BENCH["t_scal_conv"] + Na * BENCH["t_g1_add"] + 2 * BENCH["t_pairing"]
     res["B-BLS"] = (v, eb.sum(), eb.max(), Na * rb, Na * 36)
     # U-MHT (Merkle proofs returning sampled blocks)
     depth = math.ceil(math.log2(N_BLOCKS))
-    em = interp(pc["mht_prove"], a)
-    v = float(interp(pc["mht_verify"], a).sum())
+    em = xp + interp(pc["mht_prove"], a)
+    v = float((xp + interp(pc["mht_verify"], a)).sum())
     res["U-MHT"] = (v, em.sum(), em.max(), float(a.sum() * (4096 + depth * 32)), Na * 36)
     return res
 

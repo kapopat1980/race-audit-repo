@@ -1,0 +1,23 @@
+{
+ "strategy": "uniform",
+ "seed": 101,
+ "N": 64,
+ "T": 200,
+ "Bn": 256,
+ "exposure": 0.5753440311066063,
+ "exposure_unw": 0.73,
+ "mttd": 0.35180722891566263,
+ "episodes": 415,
+ "detections": 415,
+ "false_positives": 0,
+ "repairs_clean": 415,
+ "verifier_ms": 10.887803419955162,
+ "node_cpu_total_ms": 77.53656603000006,
+ "proof_kb": 281.856,
+ "challenge_b": 2624.0,
+ "samples": 16384.0,
+ "repair_blocks": 144.09638554216866,
+ "repair_queries": 955.1036144578313,
+ "repair_rounds": 16.0,
+ "repair_kb": 5395.082554216868
+}

@@ -1,0 +1,23 @@
+{
+ "strategy": "race",
+ "seed": 100,
+ "N": 64,
+ "T": 200,
+ "Bn": 256,
+ "exposure": 0.18149154949181479,
+ "exposure_unw": 0.275,
+ "mttd": 0.14705882352941177,
+ "episodes": 374,
+ "detections": 373,
+ "false_positives": 0,
+ "repairs_clean": 373,
+ "verifier_ms": 0.8658541200361469,
+ "node_cpu_total_ms": 71.89807656000009,
+ "proof_kb": 281.856,
+ "challenge_b": 2624.0,
+ "samples": 15750.56,
+ "repair_blocks": 144.87399463806972,
+ "repair_queries": 953.1849865951742,
+ "repair_rounds": 16.0,
+ "repair_kb": 5392.815160857908
+}

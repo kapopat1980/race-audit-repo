@@ -4,8 +4,8 @@ import json, time, os, math
 import numpy as np
 from scipy import stats
 from sim import *
-from race_lib import (MacKey, MacTagStore, Replica, race_challenge, group_test_localise,
-                      waterfill, S_SECT, FE_BYTES)
+from race_lib import (MacKey, MacTagStore, Replica, race_challenge, group_test_localise, expand_challenge, race_prove,
+                      race_verify_all, waterfill, S_SECT, FE_BYTES)
 
 SEEDS = list(range(100, 130))
 EPOCHS = 300
@@ -151,6 +151,21 @@ if "E4" in SECS:
 if "E5" in SECS:
     # ---------------- E5 cost per epoch vs N (steady-state RACE allocation; uniform c=256 for baselines)
     E5 = {}
+    key = MacKey(); hon = Replica(N_BLOCKS); tags = MacTagStore(key, hon); ek = os.urandom(32)
+    def measured_race_verifier(cv):
+        """Wall-clock time of the real verifier (challenge expansion + consensus-grouped verification) on real proofs."""
+        cv = [int(x) for x in cv if x > 0]
+        seed, idx, nus = race_challenge(ek, 7, N_BLOCKS, max(cv))
+        proofs = {c_: race_prove(hon, tags, idx, nus, c_) for c_ in set(cv)}
+        ts = []
+        for _ in range(301):
+            resp = [(bytes(bytearray(proofs[c_][0])), bytes(bytearray(proofs[c_][1]))) for c_ in cv]   # distinct objects, as off the wire
+            t1 = time.perf_counter()
+            i2, n2 = expand_challenge(seed, N_BLOCKS, max(cv))
+            ok, _, _ = race_verify_all(key, i2, n2, cv, resp)
+            ts.append(time.perf_counter() - t1)
+            assert all(ok)
+        return float(np.median(ts))
     for N in [10, 50, 100, 200, 500, 1000]:
         rr = run(lambda **k: Race(**k), N=N, B_per_node=256, epochs=150, seed=101, record_alloc=True)
         c_race = rr["allocs"][-1]
@@ -158,8 +173,8 @@ if "E5" in SECS:
         nf = int(round(exp_fail))
         cu = np.full(N, 256.0)
         cr, cu_ = epoch_costs(c_race, n_fail_groups=nf), epoch_costs(cu, n_fail_groups=nf)
-        row = {"RACE-Audit": cr["RACE-Audit"]}
-        for s in ["U-HMAC", "U-BLS", "B-BLS", "U-MHT"]:
+        row = {"RACE-Audit": cr["RACE-Audit"], "RACE-Audit (measured verifier)": measured_race_verifier(c_race)}
+        for s in ["U-HMAC", "U-HMAC-T", "U-BLS", "B-BLS", "U-MHT", "EDI-C"]:
             row[s] = cu_[s]
         fails = np.random.default_rng(3).choice(N, nf, replace=False) if nf else []
         lc, chk = bbls_localisation_cost(cu, fails)
@@ -168,17 +183,15 @@ if "E5" in SECS:
                            race_tiers=sorted(set(map(int, c_race))), race_max_c=float(c_race.max()),
                            failures_per_epoch=exp_fail, bbls_loc_checks=chk if nf else 0)
         E5[N] = row
-        print("E5", N, {k: (round(v[0], 4), round(v[3] / 1e3, 1)) for k, v in row.items() if k != "meta"}, flush=True)
+        print("E5", N, {k: (round(v[0] * 1e3, 3), round(v[3] / 1e3, 1)) for k, v in row.items() if isinstance(v, tuple)}, "measured RACE verifier ms", round(1e3 * row["RACE-Audit (measured verifier)"], 3), flush=True)
     R["E5_cost"] = E5
 
 
     # ---------------- E6 localisation (real protocol, c = 512)
-    key = MacKey(); hon = Replica(N_BLOCKS); tags = MacTagStore(key, hon)
     E6 = {}
-    ek = os.urandom(32)
     c = 512
     for ds in [1, 2, 4, 8, 16, 32]:
-        qd, qp, tim = [], [], []
+        qd, qp, tim, rds = [], [], [], []
         for rep in range(10):
             _, idx, nus = race_challenge(ek, 1000 * ds + rep, N_BLOCKS, c)
             rng = np.random.default_rng(rep)
@@ -186,15 +199,16 @@ if "E5" in SECS:
             bad = rng.choice(idx, ds, replace=False)
             r.corrupt(bad, rng)
             t1 = time.perf_counter()
-            found, q, _ = group_test_localise(key, r, tags, idx, nus)
+            found, q, _, rd = group_test_localise(key, r, tags, idx, nus)
+            rds.append(rd)
             tim.append(time.perf_counter() - t1)
             assert sorted(found) == sorted(int(b) for b in bad)
-            _, q2, _ = group_test_localise(key, r, tags, idx, nus, differential=False)
+            _, q2, _, _ = group_test_localise(key, r, tags, idx, nus, differential=False)
             qd.append(q); qp.append(q2)
         resp = (S_SECT + 1) * FE_BYTES
         E6[ds] = dict(q_diff=ci95(qd), q_plain=ci95(qp), bound=ds * math.ceil(math.log2(c)),
                       bytes_diff=float(np.mean(qd)) * resp, bytes_plain=float(np.mean(qp)) * resp,
-                      bytes_reveal=c * (4096 + 16), bytes_mht=c * (4096 + 14 * 32), time_diff=float(np.median(tim)))
+                      bytes_reveal=c * (4096 + 16), bytes_mht=c * (4096 + 14 * 32), time_diff=float(np.median(tim)), rounds=float(np.max(rds)))
         print("E6", ds, E6[ds]["q_diff"], E6[ds]["q_plain"], flush=True)
     R["E6_localisation"] = E6
 

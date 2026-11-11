@@ -1,7 +1,8 @@
 {
- "empirical_detection": 0.472,
+ "empirical_detection": 0.4749,
  "analytic_detection": 0.47737004645676684,
- "trials": 2000,
+ "trials": 20000,
+ "binomial_se": 0.0035319108511019295,
  "d": 41,
  "n": 4096,
  "c": 64
